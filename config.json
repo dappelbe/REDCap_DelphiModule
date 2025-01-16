@@ -9,6 +9,7 @@
       "institution": "OxfordTrauma, OCTRU, NDORMS, The University of Oxford"
     }
   ],
+  "framework-version": 15,
   "permissions": ["redcap_data_entry_form", "redcap_survey_page"],
   "enable-every-page-hooks-on-system-pages": false,
   "compatibility": {
