@@ -1,2 +1,2 @@
-# REDCap_DelphiModule
-An external module to help with Delphi Projects in REDCap
+# REDCap_ExternalModule_Template
+Template repository to be used for REDCap Module development

@@ -1,0 +1,20 @@
+{
+  "name": "octru/redcap_[ADD HERE]",
+  "description": "[ADD HERE]",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "",
+      "email": ""
+    }
+  ],
+  "autoload": {
+    "psr-0": {
+      "": "OCTRU/"
+    }
+  },
+  "require": {
+    "phpunit/phpunit": "^9.5"
+  }
+}
