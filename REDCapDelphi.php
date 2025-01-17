@@ -71,8 +71,10 @@ class REDCapDelphi
                     $groups = '[' . $groups . ']';
 
                     //-- Now squirt out the JS
-                    echo '<script>$().ready(function(){delphi_display_results("'. $elmt . '",' . $groups .' );});</script>' . PHP_EOL;
-                    echo '<script>$().ready(function(){delphi_highlight_td("'. $elmt . '",' . $lastRoundVal .' );});</script>' . PHP_EOL;
+                    $funct1 = '<script>$().ready(function(){delphi_display_results("'. $elmt . '",' . $groups .' );});</script>' . PHP_EOL;
+                    $funct2 = '<script>$().ready(function(){delphi_highlight_td("'. $elmt . '",' . $lastRoundVal .' );});</script>' . PHP_EOL;
+                    echo $funct1;
+                    echo $funct2;
                 }
             }
         }
