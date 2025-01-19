@@ -8,6 +8,7 @@ by stakeholder group and pre-populates a radio button group with the participant
 ## ToDo
 - Change the display to show a distribution of all answers for this question.
 - Auto calculate the values to display
+- Allow the user to specify the number of options in the likart scale
 
 # Setup
 Install the module from REDCap module repository and enable over Control Center.
@@ -18,14 +19,10 @@ Install the module from REDCap module repository and enable over Control Center.
 - The Delphi survey that you wish to use this module on, must also ask the questions using radio buttons.
 - For each question in the Delphi survey use the following annotation:
 
+For a 12 point likert scale (0-10 + Unsure) use
+
 ```
-@DELPHI={
-        "preRound":"[event_1_arm_1][delphi01_q02]",
-        "groups":[
-            {"name":"Group 1","score":"9","colour":"#0000FF"},
-            {"name":"Group 2","score":"8","colour":"#0000FF"}
-            ]
-       }
+@DELPHI={"preRound":"[event_1_arm_1][delphi01_q02]","groups":[{"name":"Group 1","score":"9","colour":"#0000FF"}]}
 ```
 
 where:
@@ -37,6 +34,8 @@ where:
 | name | The name of the stakeholder group, used as a label in the table of previous scores.                          | Group 1 |
 | score | The average score to display (this should be in the same range as that used for the radiobutton list)        | 8 |
 | colour | The colour to fill the table cell in with, as a HEX code | #0000FF |
+
+Please note that the radiobutton question should be formatted as Left Horizontal
 
 # Changelog
 
