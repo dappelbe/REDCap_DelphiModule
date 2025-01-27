@@ -18,7 +18,7 @@ class REDCapDelphi
             ||
             (PAGE == 'surveys/index.php' && !empty($_GET['id']) )
         ) {
-            $this->includeJs('scripts/delphi.js');
+            $this->includeJs('scripts/delphi2.js');
             $this->process($project_id, $record);
         }
     }
@@ -29,15 +29,22 @@ class REDCapDelphi
             ||
             (PAGE == 'surveys/index.php' && !empty($_GET['id']) )
         ) {
-            $this->includeJs('scripts/delphi.js');
+            $this->includeJs('scripts/delphi2.js');
             $this->process($project_id, $record);
         }
     }
 
-     function process( $project_id, $record) {
+    function process( $project_id, $record) {
         global $Proj;
+        $hastag = false;
+
+        $config = [
+            'type' => 'single',
+            'elements' => [],
+        ];
         $tag = '@DELPHI';
         if ( $this->CheckForTags($Proj, $project_id, $record, $tag) ) {
+            $hastag = true;
             $data = \REDCap::getData($Proj->project['project_id'], 'array', $_GET['id']);
             $fields = empty($_GET['page']) ? $Proj->metadata : $Proj->forms[$_GET['page']]['fields'];
             foreach (array_keys($fields) as $field_name) {
@@ -63,20 +70,18 @@ class REDCapDelphi
                         $lastRoundVal = $data[$record][$event_id][$fieldMatches[2][0]];
                     }
                     //-- Now process groups
-                    $groups = '';
+                    $groups = [];
+                    $groups['prevscore'] = $lastRoundVal;
                     foreach( $params['groups'] as $grp) {
-                        $groups .= '["' . $grp['name'] . '",' . $grp['score'] . ',"' . $grp['colour'] . '"]';
+                        $groups['group'][] = ['name' => $grp['name'], "score" => $grp['score'], "colour" => $grp['colour']];
                     }
-                    $groups = str_replace( '][', '],[', $groups);
-                    $groups = '[' . $groups . ']';
-
-                    //-- Now squirt out the JS
-                    $funct1 = '<script>$().ready(function(){delphi_display_results("'. $elmt . '",' . $groups .' );});</script>' . PHP_EOL;
-                    $funct2 = '<script>$().ready(function(){delphi_highlight_td("'. $elmt . '",' . $lastRoundVal .' );});</script>' . PHP_EOL;
-                    echo $funct1;
-                    echo $funct2;
+                    $config['elements'][$elmt] = $groups;
                 }
             }
+        }
+
+        if ( $hastag ) {
+            $this->setJsSettings($config);
         }
     }
 
@@ -121,7 +126,11 @@ class REDCapDelphi
         // For shib installations, it is necessary to use the API endpoint for resources
         global $auth_meth;
         $ext_path = $auth_meth == 'shibboleth' ? $this->getUrl($path, true, true) : $this->getUrl($path);
-        echo '<link rel="stylesheet" href=""' . $ext_path . '" crossorigin="anonymous" />';
+        echo '<link rel="stylesheet" href=""' . $ext_path . '" />';
+    }
+
+    protected function setJsSettings($settings) {
+        echo '<script>REDCapDelphi = ' . json_encode($settings) . ';</script>';
     }
 
 }
