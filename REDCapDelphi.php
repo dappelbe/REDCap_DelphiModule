@@ -18,6 +18,7 @@ class REDCapDelphi
             ||
             (PAGE == 'surveys/index.php' && !empty($_GET['id']) )
         ) {
+            $this->includeJs('scripts/echarts-5.5.6.min.js');
             $this->includeJs('scripts/delphi2.js');
             $this->process($project_id, $record);
         }
@@ -29,6 +30,7 @@ class REDCapDelphi
             ||
             (PAGE == 'surveys/index.php' && !empty($_GET['id']) )
         ) {
+            $this->includeJs('scripts/echarts-5.5.6.min.js');
             $this->includeJs('scripts/delphi2.js');
             $this->process($project_id, $record);
         }
@@ -130,7 +132,7 @@ class REDCapDelphi
     }
 
     protected function setJsSettings($settings) {
-        echo '<script>REDCapDelphi = ' . json_encode($settings) . ';</script>';
+        echo '<script>REDCapDelphi = ' . json_encode($this->escape($settings)) . ';</script>';
     }
 
 }
