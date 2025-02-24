@@ -36,14 +36,13 @@ class REDCapDelphi
         }
     }
 
-    function process( $project_id, $record) {
+     function process( $project_id, $record) {
         global $Proj;
         $hastag = false;
 
-        $config = [
-            'type' => 'single',
-            'elements' => [],
-        ];
+         $config = [
+             'elements' => [],
+         ];
         $tag = '@DELPHI';
         if ( $this->CheckForTags($Proj, $project_id, $record, $tag) ) {
             $hastag = true;
@@ -63,6 +62,10 @@ class REDCapDelphi
                     }
                     $params = json_decode(trim($misc), true);
                     $elmt = $field_name;
+                    $displayType = 'single';
+                    if ( array_key_exists('type', $params) ) {
+                        $displayType = $params['type'];
+                    }
                     $lastRoundVal = $params['preRound'];
                     if (preg_match_all('/(?:\[([a-z0-9][_a-z0-9]*)\])?\[([a-z][_a-zA-Z0-9:\(\)-]*)\](\[(\d+)\])?/',
                         $lastRoundVal,
@@ -77,7 +80,8 @@ class REDCapDelphi
                     foreach( $params['groups'] as $grp) {
                         $groups['group'][] = ['name' => $grp['name'], "score" => $grp['score'], "colour" => $grp['colour']];
                     }
-                    $config['elements'][$elmt] = $groups;
+                    $config['elements'][$elmt]['type'] = $displayType;
+                    $config['elements'][$elmt]['groups'] = $groups;
                 }
             }
         }

@@ -4,22 +4,32 @@
  */
 
 $(document).ready(function(){
-    switch(REDCapDelphi.type){
-        case 'single':
-        default:
-            let elmts = REDCapDelphi.elements;
-            $.each(elmts, function(key, value){
-                delphi_highlight_td(key,value.prevscore);
-                delphi_display_results(key,value.group);
-            });
-            break;
-    }
+    let elmts = REDCapDelphi.elements;
+    $.each(elmts, function(key, value){
+        switch(value.type){
+            case 'single-matrix':
+                delphi_highlight_td(key,5);
+                delphi_display_results_matrix(key,value.groups.group);
+                break;
+            case 'single':
+            default:
+                delphi_highlight_td(key,value.groups.prevscore);
+                delphi_display_results(key,value.groups.group);
+                break;
+        }
+    });
 })
 
+function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+async function clearGreenHighlight() {
+    await delay(500);
+    $('form#form #questiontable tr td.greenhighlight').removeClass('greenhighlight');
+}
 function delphi_highlight_td(elmt,score) {
-    $('#label-' + elmt + '-' + score).prev().prop("checked", true);
-    $('#label-' + elmt + '-' + score).parent().css('background-color','#FFC20A');
-    $('[name="' + elmt + '"]').val(score);
+    $('input[name="' + elmt + '___radio"][value="' + score + '"]').prop("checked", true);
+    $('input[name="' + elmt + '___radio"][value="' + score + '"]').parent().css('background-color','#FFC20A');
 }
 
 function delphi_display_results(elmt, groups) {
@@ -68,9 +78,38 @@ function delphi_display_results(elmt, groups) {
     rowText = '<tr><td colspan="13" style="font-weight:normal;"><p>Please now consider your previous rating; if you wish to change this, please select your new rating. Please then click \'next page\' to move to the next topic</p></td></tr>';
     $(rowText).insertAfter($('[name='+elmt+']').next('table').find('tr:last'));
 
-
     //-- now disable the greenhighlight
     $('.nogreen, .smalllink').on('click', function(){
         $('form#form #questiontable tr td.greenhighlight').removeClass('greenhighlight');
     });
+
+    clearGreenHighlight();
+
+}
+
+function delphi_display_results_matrix(elmt,groups) {
+    $('<tr class="labelmatrix col-12" style="display: table-row; border-bottom: none;"><td colspan="2">' + $('[data-mlm-field="' + elmt + '"][data-mlm-type="label"]').html() + '</td></tr>').insertBefore('#' + elmt + '-tr');
+
+    let tdCtr = $('[name='+elmt+'___radio]').length;
+    let values = [];
+
+    rowText = '';
+    $.each(groups, function(key, value){
+        rowText = '<tr><td style="padding:2px 0;">'
+            + value.name
+            + '</td>';
+        for (let i = 0; i < tdCtr; i++ ) {
+            if ( i == value.score ) {
+                rowText += '<td  class="" style="border: 1px solid black; background-color: ' + value.colour + '">&#160;</td>';
+            } else {
+                rowText += '<td  class="" style="border: 1px dotted black;">&#160;</td>';
+            }
+        }
+        rowText += '</tr>';
+        $(rowText).insertBefore($('[name="' + elmt + '___radio"]').first().parent().parent());
+    });
+
+    $('[data-mlm-field="' + elmt + '"][data-mlm-type="label"]').html('Your rating')
+    rowText = '<tr><td colspan="13" style="font-weight:normal;"><p>Please now consider your previous rating; if you wish to change this, please select your new rating. Please then click \'next page\' to move to the next topic</p></td></tr>';
+    $('#' + elmt + '-tr').find('table').first().append(rowText)
 }
