@@ -7,8 +7,12 @@ $(document).ready(function(){
     let elmts = REDCapDelphi.elements;
     $.each(elmts, function(key, value){
         switch(value.type){
+            case 'bar':
+                delphi_highlight_td(key,value.groups.prevscore);
+                delphi_display_results_bar(key,value.groups.group);
+                break;
             case 'single-matrix':
-                delphi_highlight_td(key,5);
+                delphi_highlight_td(key,value.groups.prevscore);
                 delphi_display_results_matrix(key,value.groups.group);
                 break;
             case 'single':
@@ -55,7 +59,7 @@ function delphi_display_results(elmt, groups) {
     $.each(groups, function(key, value){
         rowText = '<tr><td>' + value.name + '<br/><br/></td>';
         for (let i = 0; i < tdCtr; i++ ) {
-            if ( i == value.score ) {
+            if ( values[i] == value.score ) {
                 rowText += '<td style="border: 1px dotted #999; background-color: ' + value.colour + '"></td>';
             } else {
                 rowText += '<td style="border: 1px dotted #999;"></td>';
@@ -93,13 +97,15 @@ function delphi_display_results_matrix(elmt,groups) {
     let tdCtr = $('[name='+elmt+'___radio]').length;
     let values = [];
 
+    $('[name='+elmt+'___radio]').each( function() { values.push($(this).prop('value'))});
+
     rowText = '';
     $.each(groups, function(key, value){
         rowText = '<tr><td style="padding:2px 0;">'
             + value.name
             + '</td>';
         for (let i = 0; i < tdCtr; i++ ) {
-            if ( i == value.score ) {
+            if ( values[i] == value.score ) {
                 rowText += '<td  class="" style="border: 1px solid black; background-color: ' + value.colour + '">&#160;</td>';
             } else {
                 rowText += '<td  class="" style="border: 1px dotted black;">&#160;</td>';
@@ -112,4 +118,54 @@ function delphi_display_results_matrix(elmt,groups) {
     $('[data-mlm-field="' + elmt + '"][data-mlm-type="label"]').html('Your rating')
     rowText = '<tr><td colspan="13" style="font-weight:normal;"><p>Please now consider your previous rating; if you wish to change this, please select your new rating. Please then click \'next page\' to move to the next topic</p></td></tr>';
     $('#' + elmt + '-tr').find('table').first().append(rowText)
+    clearGreenHighlight();
+}
+
+function delphi_display_results_bar(elmt,groups) {
+    let tdCtr = $('[name='+elmt+'___radio]').length;
+    let values = [];
+
+    $('[name='+elmt+'___radio]').each( function() { values.push($(this).prop('value'))});
+
+    $('[name='+elmt+']').nextAll('.choicehoriz')
+        $.each(function() {
+            $(this).wrap('<td style="border: 1px dotted #999;"></td>')
+        });
+    $('<td>Your rating</td>').insertBefore($('[name='+elmt+']').next('td'));
+    
+    //$('[data-mlm-field="' + elmt + '"][data-mlm-type="label"]').html('Your rating')
+    //rowText = '<tr><td colspan="13" style="font-weight:normal;"><p>Please now consider your previous rating; if you wish to change this, please select your new rating. Please then click \'next page\' to move to the next topic</p></td></tr>';
+    $.each(groups, function(key, value) {
+        $('#' + elmt + '-tr').find('table').first().append('<div id="' + elmt + '-graph" class="' + elmt + '-graph" style="height:300px;"></div>')
+        let data = value.score.split(',');
+        let myChart = echarts.init($('.' + elmt + '-graph')[0]);
+        let option = {
+            title: [
+                {
+                    left: 'center',
+                    text: value.name,
+                },
+                ],
+            tooltip: {},
+            xAxis: {
+                data: values,
+            },
+            yAxis: {},
+            series: [
+                {
+                    name: value.name,
+                    type: 'bar',
+                    data: data,
+                }
+            ]
+        };
+        // Display the chart using the configuration items and data just specified.
+        myChart.setOption(option);
+    });
+
+    $('<span><b>Your rating</b>&#160;&#160;&#160;&#160;</span>').insertAfter('[name="aa"]');
+    rowText = '<tr><td colspan="13" style="font-weight:normal;"><p>Please now consider your previous rating; if you wish to change this, please select your new rating. Please then click \'next page\' to move to the next topic</p></td></tr>';
+    $(rowText).insertBefore('#' + elmt + '_MDLabel')
+
+    clearGreenHighlight();
 }

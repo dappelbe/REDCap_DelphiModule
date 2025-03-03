@@ -72,6 +72,9 @@ class REDCapDelphi
                         $fieldMatches,
                         PREG_PATTERN_ORDER)) {
                         $event_id = $Proj->getEventIdUsingUniqueEventName($fieldMatches[1][0]);
+                        if ( count($Proj->events) == 1) {
+                            $event_id = array_keys($Proj->events[array_keys($Proj->events)[0]]['events'])[0];
+                        }
                         $lastRoundVal = $data[$record][$event_id][$fieldMatches[2][0]];
                     }
                     //-- Now process groups
