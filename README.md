@@ -111,14 +111,14 @@ To use the default display you should use the following tag configuration.
 
 where:
 
-| key | description                                                                                                                                         | Example |
-| --- |-----------------------------------------------------------------------------------------------------------------------------------------------------| ------- |
+| key | description                                                                                                                                         | Example                                                                                               |
+| --- |-----------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------|
 | type | single for the default display or single-matrix if you wish to display for matrix questions.                                                        |
-| preRound | The field in the previous round holding the participants score to this question in the format [event][field]                                        | [event_1_arm_1][delphi01_q02] |
+| preRound | The field in the previous round holding the participants score to this question in the format [event][field]                                        | [event_1_arm_1][delphi01_q02]                                                                         |
 | groups | An array of the stakeholder groups, score to be assigned and colour to display the score in.                                                        | [{"name":"Group 1","score":"9","colour":"#0000FF"},{"name":"Group 2","score":"8","colour":"#0000FF"}] |
-| name | The name of the stakeholder group, used as a label in the table of previous scores.                                                                 | Group 1 |
-| score | A comma seperated list of values to display, the order in which they are displayed will correspond to the order of the values of your radio buttons | 8 |
-| colour | The colour to fill the table cell in with, as a HEX code                                                                                            | #0000FF |
+| name | The name of the stakeholder group, used as a label in the table of previous scores.                                                                 | Group 1                                                                                               |
+| score | A comma seperated list of values to display, the order in which they are displayed will correspond to the order of the values of your radio buttons | 9,8,7,6,5,4,3,2,1                                                                                     |
+| colour | The colour to fill the table cell in with, as a HEX code                                                                                            | #0000FF                                                                                               |
 
 
 # Changelog
